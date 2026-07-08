@@ -330,14 +330,25 @@ fi
 
 # --- Model -----------------------------------------------------------------------------
 MODEL_DISP="${MODEL_NAME:-$MODEL_ID}"
+
+# Mark if the model is Gemini
+if [[ "${MODEL_ID,,}" == *gemini* || "${MODEL_NAME,,}" == *gemini* ]]; then
+  MODEL_GEMINI=true
+  MODEL_COLOR="$FG_MAGENTA"
+else
+  MODEL_GEMINI=false
+  MODEL_COLOR="$FG_YELLOW"
+fi
+
 M=""
 if [ -n "$MODEL_DISP" ]; then
   if [ "$USE_CLASSIC_ICONS" = "true" ]; then
-    M="${DOT_L1}${FG_BRIGHT_MAGENTA}${I}${MODEL_DISP}${R}"
+    M="${DOT_L1}${MODEL_COLOR}${I}${MODEL_DISP}${R}"
   else
-    M="${DOT_L1}${FG_BRIGHT_MAGENTA}${I}${ICON_MODEL} ${MODEL_DISP}${R}"
+    M="${DOT_L1}${MODEL_COLOR}${I}${ICON_MODEL} ${MODEL_DISP}${R}"
   fi
 fi
+
 
 # --- Sandbox Badge ---------------------------------------------------------------------
 if [ "$SANDBOX" = "true" ]; then
@@ -360,8 +371,8 @@ FILLED=$((PCT_INT * BAR_LEN / 100))
 REMAINDER=$(( (PCT_INT * BAR_LEN) % 100 ))
 
 if   [ "$PCT_INT" -ge 90 ]; then FILL_COLOR="$FG_BRIGHT_RED"
-elif [ "$PCT_INT" -ge 60 ]; then FILL_COLOR="$FG_BRIGHT_YELLOW"
-else                              FILL_COLOR="$FG_YELLOW"
+elif [ "$PCT_INT" -ge 60 ]; then FILL_COLOR="$FG_BRIGHT_CYAN"
+else                              FILL_COLOR="$FG_CYAN"
 fi
 
 if [ "$USE_CLASSIC_ICONS" = "true" ]; then
@@ -392,7 +403,7 @@ else
     else BAR="${BAR}${FG_GRAY}░${R}"
     fi
   done
-  CTX_BAR="${FG_YELLOW}${ICON_CONTEXT_BAR}  ${R}${BAR} ${NUM_COLOR}${PCT_FMT}%${R}"
+  CTX_BAR="${FG_CYAN}${ICON_CONTEXT_BAR}  ${R}${BAR} ${NUM_COLOR}${PCT_FMT}%${R}"
 fi
 
 # --- Stats & Metadata formatting -------------------------------------------------------
@@ -496,7 +507,7 @@ make_quota_bar() {
         bar="${bar}░"
       fi
     done
-    echo -n "${separator}${FG_BRIGHT_WHITE}${B}${label}${R} ${FG_GRAY}${bar} N/A${R}"
+    echo -n "${separator}${FG_BRIGHT_WHITE}${label}${R} ${FG_GRAY}${bar} N/A${R}"
     return
   fi
 
@@ -555,14 +566,14 @@ make_quota_bar() {
   fi
 
   if [ "$USE_CLASSIC_ICONS" = "true" ]; then
-    echo -n "${separator}${FG_BRIGHT_WHITE}${B}${label}${R} ${bar_color}${bar}${R} ${text_color}${val}%${FG_GRAY}${reset_str}${R}"
+    echo -n "${separator}${FG_BRIGHT_WHITE}${label}${R} ${bar_color}${bar}${R} ${text_color}${val}%${FG_GRAY}${reset_str}${R}"
   else
-    echo -n "${separator}${FG_BRIGHT_WHITE}${B}${label}${R} ${bar} ${text_color}${val}%${FG_GRAY}${reset_str}${R}"
+    echo -n "${separator}${FG_BRIGHT_WHITE}${label}${R} ${bar} ${text_color}${val}%${FG_GRAY}${reset_str}${R}"
   fi
 }
 
 # --- Determine active quota based on actual availability -------------------------------
-if [[ "${MODEL_ID,,}" == *gemini* || "${MODEL_NAME,,}" == *gemini* ]]; then
+if [ "$MODEL_GEMINI" = true ]; then
   Q_5H="$GEMINI_5H"
   Q_WK="$GEMINI_WK"
   Q_5H_R="$GEMINI_5H_RESET"
@@ -582,7 +593,7 @@ fi
 
 QUOTA_FMT=""
 if { [ -n "$Q_5H" ] && [ "$Q_5H" != "-1" ]; } || { [ -n "$Q_WK" ] && [ "$Q_WK" != "-1" ]; }; then
-  QUOTA_FMT="$(make_quota_bar "$Q_5H" "5H" "$FG_BRIGHT_CYAN" "$Q_5H_R") $(make_quota_bar "$Q_WK" "7D" "$FG_BRIGHT_MAGENTA" "$Q_WK_R")"
+  QUOTA_FMT="$(make_quota_bar "${Q_5H}" "5H" "${MODEL_COLOR}" "${Q_5H_R}") $(make_quota_bar "${Q_WK}" "7D" "${MODEL_COLOR}" "${Q_WK_R}")"
 fi
 
 # --- Right-align helper ----------------------------------------------------------------
