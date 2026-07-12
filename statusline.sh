@@ -3,29 +3,39 @@ set -euo pipefail
 INPUT_JSON=$(cat)
 
 # --- ANSI Helpers (Standard 16-color palette only) -------------------------------------
-R="\033[0m"         # Reset
-B="\033[1m"         # Bold
-D="\033[2m"         # Dim
-I="\033[3m"         # Italic
+# ANSI Color Code: https://color-palette.hexdocs.pm/ansi_color_codes.htm
+R="\e[0m"         # Reset
+B="\e[1m"         # Bold
+D="\e[2m"         # Dim
+I="\e[3m"         # Italic
 
 # Foreground accents (Standard 16 colors)
-FG_BLACK="\033[30m"
-FG_RED="\033[31m"
-FG_GREEN="\033[32m"
-FG_YELLOW="\033[33m"
-FG_BLUE="\033[34m"
-FG_MAGENTA="\033[35m"
-FG_CYAN="\033[36m"
-FG_WHITE="\033[37m"
+FG_BLACK="\e[30m"
+FG_RED="\e[31m"
+FG_GREEN="\e[32m"
+FG_YELLOW="\e[33m"
+FG_BLUE="\e[34m"
+FG_MAGENTA="\e[35m"
+FG_CYAN="\e[36m"
+FG_WHITE="\e[37m"
 
-FG_GRAY="\033[90m"
-FG_BRIGHT_RED="\033[91m"
-FG_BRIGHT_GREEN="\033[92m"
-FG_BRIGHT_YELLOW="\033[93m"
-FG_BRIGHT_BLUE="\033[94m"
-FG_BRIGHT_MAGENTA="\033[95m"
-FG_BRIGHT_CYAN="\033[96m"
-FG_BRIGHT_WHITE="\033[97m"
+FG_GRAY="\e[90m"
+FG_BRIGHT_RED="\e[91m"
+FG_BRIGHT_GREEN="\e[92m"
+FG_BRIGHT_YELLOW="\e[93m"
+FG_BRIGHT_BLUE="\e[94m"
+FG_BRIGHT_MAGENTA="\e[95m"
+FG_BRIGHT_CYAN="\e[96m"
+FG_BRIGHT_WHITE="\e[97m"
+
+# ANSI 256
+FG_STRAWBERRY="\e[38;5;204m"
+FG_LIGHT_ORANGE="\e[38;5;215m"
+FG_CORAL="\e[38;5;209m"
+FG_CALAMANSI="\e[38;5;229m"
+FG_DANDELION="\e[38;5;221m"
+FG_BLUE_COLA="\e[38;5;32m"
+FG_VIVID_SKY_BLUE="\e[38;5;45m"
 
 # Number Highlight Color
 NUM_COLOR="${FG_BRIGHT_WHITE}${B}"
@@ -226,9 +236,9 @@ if [ -n "$PLAN_TIER" ] || [ -n "$USER_EMAIL" ]; then
     user_info="${user_info:0:32}..."
   fi
   if [ "$USE_CLASSIC_ICONS" = "true" ]; then
-    USER_FMT="${DOT_L1}${FG_CYAN}${user_info}${R}"
+    USER_FMT="${DOT_L1}${FG_STRAWBERRY}${user_info}${R}"
   else
-    USER_FMT="${DOT_L1}${FG_CYAN} ${user_info}${R}"
+    USER_FMT="${DOT_L1}${FG_STRAWBERRY} ${user_info}${R}"
   fi
 fi
 
@@ -334,10 +344,10 @@ MODEL_DISP="${MODEL_NAME:-$MODEL_ID}"
 # Mark if the model is Gemini
 if [[ "${MODEL_ID,,}" == *gemini* || "${MODEL_NAME,,}" == *gemini* ]]; then
   MODEL_GEMINI=true
-  MODEL_COLOR="$FG_MAGENTA"
+  MODEL_COLOR="${FG_VIVID_SKY_BLUE}"
 else
   MODEL_GEMINI=false
-  MODEL_COLOR="$FG_YELLOW"
+  MODEL_COLOR="$FG_CORAL"
 fi
 
 M=""
@@ -366,13 +376,13 @@ else
 fi
 
 # --- Context Bar (20 segments) ---------------------------------------------------------
-BAR_LEN=20
+BAR_LEN=12
 FILLED=$((PCT_INT * BAR_LEN / 100))
 REMAINDER=$(( (PCT_INT * BAR_LEN) % 100 ))
 
 if   [ "$PCT_INT" -ge 90 ]; then FILL_COLOR="$FG_BRIGHT_RED"
-elif [ "$PCT_INT" -ge 60 ]; then FILL_COLOR="$FG_BRIGHT_CYAN"
-else                              FILL_COLOR="$FG_CYAN"
+elif [ "$PCT_INT" -ge 60 ]; then FILL_COLOR="$FG_CALAMANSI"
+else                              FILL_COLOR="$FG_DANDELION"
 fi
 
 if [ "$USE_CLASSIC_ICONS" = "true" ]; then
@@ -403,7 +413,7 @@ else
     else BAR="${BAR}${FG_GRAY}░${R}"
     fi
   done
-  CTX_BAR="${FG_CYAN}${ICON_CONTEXT_BAR}  ${R}${BAR} ${NUM_COLOR}${PCT_FMT}%${R}"
+  CTX_BAR="${FG_DANDELION}${ICON_CONTEXT_BAR}  ${R}${BAR} ${NUM_COLOR}${PCT_FMT}%${R}"
 fi
 
 # --- Stats & Metadata formatting -------------------------------------------------------
@@ -420,9 +430,9 @@ fi
 DIR_FMT=""
 if [ -n "$CWD_SHORT" ]; then
   if [ "$USE_CLASSIC_ICONS" = "true" ]; then
-    DIR_FMT="${DOT_L1}${FG_BRIGHT_BLUE}${CWD_SHORT}${R}"
+    DIR_FMT="${DOT_L1}${FG_LIGHT_ORANGE}${CWD_SHORT}${R}"
   else
-    DIR_FMT="${DOT_L1}${FG_BRIGHT_BLUE}${ICON_DIR} ${CWD_SHORT}${R}"
+    DIR_FMT="${DOT_L1}${FG_LIGHT_ORANGE}${ICON_DIR} ${CWD_SHORT}${R}"
   fi
 fi
 
@@ -467,13 +477,13 @@ format_reset_time() {
 
   if [ "$days" -gt 0 ]; then
     if [ "$hours" -gt 0 ]; then
-      echo -n "${days}d ${hours}h"
+      echo -n "${days}d${hours}h"
     else
       echo -n "${days}d"
     fi
   elif [ "$hours" -gt 0 ]; then
     if [ "$mins" -gt 0 ]; then
-      echo -n "${hours}h ${mins}m"
+      echo -n "${hours}h${mins}m"
     else
       echo -n "${hours}h"
     fi
@@ -521,7 +531,7 @@ make_quota_bar() {
     text_color="$FG_BRIGHT_YELLOW"
   fi
 
-  local bar_len=20
+  local bar_len=12
   local filled=$((val_int * bar_len / 100))
   local remainder=$(( (val_int * bar_len) % 100 ))
   
