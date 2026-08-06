@@ -361,17 +361,18 @@ fi
 
 
 # --- Sandbox Badge ---------------------------------------------------------------------
+SB_FMT=""
 if [ "$SANDBOX" = "true" ]; then
   if [ "$SANDBOX_NET" = "true" ]; then
-    SB="${FG_GREEN}${ICON_SANDBOX_NET} ON (net)${R}"
+    SB_FMT="${FG_GREEN}${ICON_SANDBOX_NET} (net-on)${R}"
   else
-    SB="${FG_GREEN}${ICON_SANDBOX_NONET} ON (no-net)${R}"
+    SB_FMT="${FG_GREEN}${ICON_SANDBOX_NONET} (net-off)${R}"
   fi
 else
   if [ "$USE_CLASSIC_ICONS" = "true" ]; then
-    SB="${FG_GRAY}sandbox off${R}"
+    SB_FMT="${FG_GRAY}sandbox off${R}"
   else
-    SB="${FG_RED}${ICON_SANDBOX_OFF} OFF${R}"
+    SB_FMT="${FG_RED}${ICON_SANDBOX_OFF} ${R}"
   fi
 fi
 
@@ -629,9 +630,9 @@ if [ "$COLS" -ge 180 ]; then
   LINE1="${S}${M}${CLI_VER_FMT}${USER_FMT}${HOST_FMT}${DIR_FMT}${V}${CONV_FMT}"
 
   if [ -n "$QUOTA_FMT" ]; then
-    LINE2="${ART_FMT}${DOT_L2}${SUB_FMT}${DOT_L2}${BG_FMT}${DOT_L2}${SB}${DOT_L2}${CTX_BAR}${TOK_DETAILS_WIDE}${QUOTA_FMT}${POWER_FMT}"
+    LINE2="${ART_FMT}${DOT_L2}${SUB_FMT}${DOT_L2}${BG_FMT}${DOT_L2}${SB_FMT}${DOT_L2}${CTX_BAR}${TOK_DETAILS_WIDE}${QUOTA_FMT}${POWER_FMT}"
   else
-    LINE2="${ART_FMT}${DOT_L2}${SUB_FMT}${DOT_L2}${BG_FMT}${DOT_L2}${SB}${DOT_L2}${CTX_BAR}${TOK_DETAILS_WIDE}${POWER_FMT}"
+    LINE2="${ART_FMT}${DOT_L2}${SUB_FMT}${DOT_L2}${BG_FMT}${DOT_L2}${SB_FMT}${DOT_L2}${CTX_BAR}${TOK_DETAILS_WIDE}${POWER_FMT}"
   fi
   print_right_aligned "$LINE1" "$LINE2" "$COLS"
 
@@ -639,9 +640,9 @@ elif [ "$COLS" -ge 90 ]; then
   # Medium Layout: Two-line layout with border
   LINE1="${S}${M}${CLI_VER_FMT}${USER_FMT}${DIR_FMT}${V}"
   if [ -n "$QUOTA_FMT" ]; then
-    LINE2=" ${CTX_BAR}${TOK_DETAILS_MED}${DOT_L2}${ART_FMT}${DOT_L2}${SUB_FMT}${DOT_L2}${BG_FMT}${DOT_L2}${SB}${QUOTA_FMT}${POWER_FMT}"
+    LINE2=" ${CTX_BAR}${TOK_DETAILS_MED}${DOT_L2}${ART_FMT}${DOT_L2}${SUB_FMT}${DOT_L2}${BG_FMT}${DOT_L2}${SB_FMT}${QUOTA_FMT}${POWER_FMT}"
   else
-    LINE2=" ${CTX_BAR}${TOK_DETAILS_MED}${DOT_L2}${ART_FMT}${DOT_L2}${SUB_FMT}${DOT_L2}${BG_FMT}${DOT_L2}${SB}${POWER_FMT}"
+    LINE2=" ${CTX_BAR}${TOK_DETAILS_MED}${DOT_L2}${ART_FMT}${DOT_L2}${SUB_FMT}${DOT_L2}${BG_FMT}${DOT_L2}${SB_FMT}${POWER_FMT}"
   fi
 
   echo -e "${FG_GRAY}╭─${R}${LINE1}"
