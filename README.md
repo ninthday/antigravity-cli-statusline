@@ -55,7 +55,7 @@ The statusline operates by reading a JSON payload from `stdin` (provided by the 
 ## ✨ Key Features
 
 - **Multi-Layout Adaptation**: Automatically scales across 4 layouts (Ultra, Medium-Wide, Medium, Compact) depending on terminal width.
-- **Deep Telemetry**: Displays agent state (READY, THINKING, WORKING, TOOL), background tasks, artifacts, and subagents.
+- **Deep Telemetry**: Displays agent state (READY, WORKING, TOOL, REVIEWING), background tasks, artifacts, and subagents.
 - **System Metrics**: Real-time power/battery diagnostics and Tailscale IP tracking.
 - **Model & Token Stats**: Context window usage visualizer (20-segment bar), active model, and API quota limits (Gemini/3P).
 - **Graceful Degradation**: Built-in `--classic` mode for terminals without Nerd Font support.

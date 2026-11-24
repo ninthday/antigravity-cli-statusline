@@ -130,7 +130,7 @@ if [ "$USE_CLASSIC_ICONS" = "true" ]; then
   DOT_L1="${FG_GRAY} ╱ ${R}"
   DOT_L2="${FG_GRAY} · ${R}"
   ICON_READY="●"
-  ICON_THINKING="◆"
+  ICON_REVIEWING="◆"
   ICON_WORKING="⚙"
   ICON_TOOL="🔧"
   ICON_STATE_UNKNOWN="⏳"
@@ -153,7 +153,7 @@ else
   DOT_L1="${FG_GRAY} | ${R}"
   DOT_L2="${FG_GRAY} | ${R}"
   ICON_READY=""
-  ICON_THINKING="󰟷"
+  ICON_REVIEWING=""
   ICON_WORKING=""
   ICON_TOOL=""
   ICON_STATE_UNKNOWN=""
@@ -313,11 +313,11 @@ visible_len() {
 
 # --- State Indicator -------------------------------------------------------------------
 case "$STATE" in
-  idle)     S="${FG_BRIGHT_GREEN}${B} ${ICON_READY} READY${R}" ;;
-  thinking) S="${FG_BRIGHT_YELLOW}${B} ${ICON_THINKING} THINKING${R}" ;;
-  working)  S="${FG_BRIGHT_CYAN}${B} ${ICON_WORKING} WORKING${R}" ;;
-  tool_use) S="${FG_BRIGHT_MAGENTA}${B} ${ICON_TOOL} TOOL${R}" ;;
-  *)        S="${FG_WHITE}${B} ${ICON_STATE_UNKNOWN} $(echo "$STATE" | tr '[:lower:]' '[:upper:]')${R}" ;;
+  idle)      S="${FG_BRIGHT_GREEN}${B} ${ICON_READY} READY${R}" ;;
+  working)   S="${FG_BRIGHT_CYAN}${B} ${ICON_WORKING} WORKING${R}" ;;
+  tool_use)  S="${FG_BRIGHT_MAGENTA}${B} ${ICON_TOOL} TOOL${R}" ;;
+  reviewing) S="${FG_BRIGHT_YELLOW}${B} ${ICON_REVIEWING} REVIEWING${R}" ;;
+  *)         S="${FG_WHITE}${B} ${ICON_STATE_UNKNOWN} $(echo "$STATE" | tr '[:lower:]' '[:upper:]')${R}" ;;
 esac
 
 # --- VCS branch details ----------------------------------------------------------------
@@ -341,8 +341,8 @@ fi
 # --- Model -----------------------------------------------------------------------------
 MODEL_DISP="${MODEL_NAME:-$MODEL_ID}"
 
-# Mark if the model is Gemini
-if [[ "${MODEL_ID,,}" == *gemini* || "${MODEL_NAME,,}" == *gemini* ]]; then
+# Mark if the model is a Google model (Gemini / Orchestrator)
+if [[ "${MODEL_ID,,}" == *gemini* || "${MODEL_NAME,,}" == *gemini* || "${MODEL_ID,,}" == *orchestrator* || "${MODEL_NAME,,}" == *orchestrator* ]]; then
   MODEL_GEMINI=true
   MODEL_COLOR="${FG_VIVID_SKY_BLUE}"
 else
